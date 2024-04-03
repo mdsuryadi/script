@@ -1,0 +1,7 @@
+apt-get purge mariadb-*
+apt-get autoremove
+apt-get autoclean
+
+touch /etc/my.cnf
+
+mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
