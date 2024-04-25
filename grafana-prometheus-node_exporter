@@ -1,8 +1,8 @@
---install grafana on docker
-docker run -d -p 3000:3000 --name=grafana \
+**install grafana on docker**
+_docker run -d -p 3000:3000 --name=grafana \
   --volume grafana-storage:/var/lib/grafana \
   --net=host \
-  grafana/grafana-oss
+  grafana/grafana-oss_
 
 
 --install mysqld_exporter
