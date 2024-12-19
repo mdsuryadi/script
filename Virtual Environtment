@@ -15,4 +15,8 @@ cd Python-3.12.8/
 ./configure --enable-optimization
 sudo make install
 
-python3.12 -m venv directory
+Create Environtment
+python3.12 -m venv envdirectory
+
+source envdirectory/bin/activate
+
