@@ -1,0 +1,42 @@
+-- setting ip address
+vim /etc/netplan/00-installer-config.yaml
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    ens18:
+      dhcp4: false
+      addresses: [192.168.xx.xx/24]
+      gateway4: 192.168.xx.xx
+      nameservers:
+        addresses: [192.168.xx.xx]
+  version: 2
+netplan apply
+
+apt-get install openssh-server
+
+
+sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+
+deb [arch=arm64,amd64] http://archive.mariadb.org/mariadb-10.4.21/repo/ubuntu/ focal main main/debug
+# deb-src [arch=arm64,ppc64el,amd64] http://mirror.lstn.net/mariadb/repo/10.4/ubuntu focal main
+deb [arch=ppc64el,amd64,arm64] https://downloads.mariadb.com/MariaDB/mariadb-10.4.34/repo/ubuntu focal main
+
+
+fdisk /dev/sdx
+type m
+type n (new partition)
+type p (primary)
+type 1
+type w
+
+mkfs.ext4 /dev/sdXn
+
+mkdir /directory
+mount /dev/sdXn /directory
+
+--permanently add partition
+vim /etc/fstab
+/dev/sdn /directory ext4 defaults 0 0 
+
+--recreate mariadb database system on new directory
+mariadb-install-db --user=mysql --datadir=/data/mysql
