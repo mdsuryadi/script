@@ -1,0 +1,19 @@
+##install package
+apt-get install libjemalloc2
+
+##Edit mariadb.service
+/usr/lib/systemd/system/mariadb.service
+add under [Service]
+Environment="LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2"
+
+##Restart Daemon
+systemctl daemon-restart
+systemctl restart mariadb
+
+##cek on mariadb console
+MariaDB [(none)]> show variables like '%malloc%';
++------------------------+------------------------------------------------------------+
+| Variable_name          | Value                                                      |
++------------------------+------------------------------------------------------------+
+| version_malloc_library | jemalloc 5.2.1-0-gea6b3e973b477b8061e0076bb257dbd7f3faa756 |
++------------------------+------------------------------------------------------------+
