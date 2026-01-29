@@ -30,6 +30,7 @@ user=mysqld_exporter
 password=StrongPassword
 host=localhost
 
+
 **ADD Prometheus User**
 useradd -rs /bin/false prometheus
 chown root:prometheus /etc/.mysqld_exporter.cnf
@@ -76,7 +77,36 @@ sudo systemctl start mysqld_exporter
 sudo systemctl status mysqld_exporter
 
 
+wget https://github.com/prometheus/node_exporter/releases/download/v1.10.2/node_exporter-1.10.2.darwin-amd64.tar.gz
+cd  node_exporter-xxx
+tar -zxvf node_exporter-xxxx
+cd node_exporter-xxx
+cp -r /usr/local/bin/node_exporter
+
+
+
+sudo vim /etc/systemd/system/node_exporter.service
+[Unit]
+Description=Node Exporter
+Documentation=https://prometheus.io/docs/guides/node-exporter/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+Restart=on-failure
+ExecStart=/usr/local/bin/node_exporter \
+  --web.listen-address=:9100
+
+[Install]
+WantedBy=multi-user.target
+
+chmod 664 /etc/systemd/system/node_exporter.service
+
 ** install prometheus **
+wget https://github.com/prometheus/prometheus/releases/download/v3.9.1/prometheus-3.9.1.linux-386.tar.gz
 
 sudo mkdir /etc/prometheus /var/lib/prometheus
 cd prometheusfolder
@@ -89,26 +119,15 @@ sudo chown -R prometheus: /etc/prometheus /var/lib/prometheus
 sudo vi /etc/systemd/system/prometheus.service
 
 [Unit]
-Description=Prometheus
-Wants=network-online.target
-After=network-online.target
+Description=Prometheus Service
+After=network.target
 [Service]
-User=prometheus
-Group=prometheus
 Type=simple
-Restart=on-failure
-RestartSec=5s
-ExecStart=/usr/local/bin/prometheus \
---config.file /etc/prometheus/prometheus.yml \
---storage.tsdb.path /var/lib/prometheus/ \
---web.console.templates=/etc/prometheus/consoles \
---web.console.libraries=/etc/prometheus/console_libraries \
---web.listen-address=0.0.0.0:9090 \
---web.enable-lifecycle \
---log.level=info
+ExecStart=/usr/local/bin/prometheus --config.file=/etc/prometheus/prometheus.yml
 [Install]
 WantedBy=multi-user.target
 
+** restart service
 sudo systemctl daemon-reload
 sudo systemctl start prometheus
 sudo systemctl status prometheus
@@ -121,6 +140,6 @@ sudo systemctl status prometheus
 https://www.linkedin.com/pulse/how-install-configure-prometheus-grafana-node-aravindhan-jayaraman/
 https://shrihariharidas73.medium.com/unlocking-database-insights-monitoring-mysql-with-prometheus-and-grafana-ddd2c4f01929
 
-
+14621 -> mysql workload
 7362 -> mysql overview
 1860 -> node exporter
