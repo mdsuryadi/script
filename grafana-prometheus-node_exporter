@@ -5,15 +5,17 @@ _docker run -d -p 3000:3000 --name=grafana \
   grafana/grafana-oss_
 
 
---install mysqld_exporter
+**install mysqld_exporter**
 
 curl -s https://api.github.com/repos/prometheus/mysqld_exporter/releases/latest   | grep browser_download_url   | grep linux-amd64 | cut -d '"' -f 4   | wget -qi -
 tar xvf mysqld_exporter*.tar.gz
 sudo mv  mysqld_exporter-*.linux-amd64/mysqld_exporter /usr/local/bin/
 sudo chmod +x /usr/local/bin/mysqld_exporter
 
+**Cek Version**
 mysqld_exporter  --version
 
+**credentian configure**
 mysql -u root -p
 
 CREATE USER 'mysqld_exporter'@'localhost' IDENTIFIED BY 'StrongPassword';
@@ -21,15 +23,18 @@ GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'mysqld_exporter'@'localhost
 FLUSH PRIVILEGES;
 EXIT
 
+**Configure mysqld_exporter**
 vim /etc/.mysqld_exporter.cnf
 [client]
 user=mysqld_exporter
 password=StrongPassword
 host=localhost
 
-
+**ADD Prometheus User**
 useradd -rs /bin/false prometheus
 chown root:prometheus /etc/.mysqld_exporter.cnf
+
+**Create MysqlExporter Service**
 sudo vim /etc/systemd/system/mysql_exporter.service
 
 [Unit]
@@ -64,14 +69,14 @@ ExecStart=/usr/local/bin/mysqld_exporter \
 [Install]
 WantedBy=multi-user.target
 
+**restart daemon**
 sudo systemctl daemon-reload
 sudo systemctl enable mysqld_exporter
 sudo systemctl start mysqld_exporter
 sudo systemctl status mysqld_exporter
 
 
-install prometheus
-
+** install prometheus **
 
 sudo mkdir /etc/prometheus /var/lib/prometheus
 cd prometheusfolder
