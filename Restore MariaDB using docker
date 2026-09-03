@@ -1,0 +1,42 @@
+docker volume create --driver local \
+  --opt type=none \
+  --opt o=bind \
+  --opt device=/DATA/docker/backup \
+  mariadb-data
+
+  docker run --rm \
+  -v /DATA/base/2026-08-29_00-10-01:/backup \
+  --user root \
+  mariadb:10.4 \
+  mariadb-backup \
+    --prepare \
+    --target-dir=/backup
+
+docker run --rm \
+  -v mariadb-data:/var/lib/mysql \
+  -v /DATA/base/2026-08-29_00-10-01:/backup:ro \
+  --user root \
+  mariadb:10.4 \
+  mariadb-backup \
+    --copy-back \
+    --target-dir=/backup
+
+docker run --rm \
+  -v mariadb-data:/var/lib/mysql \
+  --user root \
+  mariadb:10.4 \
+  chown -R mysql:mysql /var/lib/mysql
+
+  docker run --rm \
+  -v mariadb-data:/var/lib/mysql \
+  --user root \
+  mariadb:10.4 \
+  ls -lah /var/lib/mysql
+
+  docker run -d \
+  --name mariadb \
+  -p 3306:3306 \
+  -v mariadb-data:/var/lib/mysql \
+  -v /DATA/docker/config/my.cnf:/etc/mysql/conf.d/my.cnf:ro \
+  -e MARIADB_ROOT_PASSWORD='YourPassword' \
+  mariadb:10.4
