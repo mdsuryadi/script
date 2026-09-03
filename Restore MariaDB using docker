@@ -1,8 +1,12 @@
+-- create docker volume 
+
 docker volume create --driver local \
   --opt type=none \
   --opt o=bind \
   --opt device=/DATA/docker/backup \
   mariadb-data
+
+--prepare backup file
 
   docker run --rm \
   -v /DATA/base/2026-08-29_00-10-01:/backup \
@@ -12,6 +16,7 @@ docker volume create --driver local \
     --prepare \
     --target-dir=/backup
 
+--copy back backup file
 docker run --rm \
   -v mariadb-data:/var/lib/mysql \
   -v /DATA/base/2026-08-29_00-10-01:/backup:ro \
