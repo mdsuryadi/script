@@ -1,0 +1,20 @@
+npm create vite@latest my-react-app -- --template react-ts 
+npm create vite@latest my-react-app -- --template react
+
+### RUN ###
+npm run dev -- --host 0.0.0.0
+
+###########
+or edit file : vite.config.ts : 
+ 
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 5173
+  }
+})
