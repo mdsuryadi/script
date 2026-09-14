@@ -161,7 +161,8 @@ def convert_integer_type(base_type, unsigned):
         return "BIGINT" if unsigned else "INTEGER"
 
     if base_type == "bigint":
-        return "NUMERIC(20)" if unsigned else "BIGINT"
+        # return "NUMERIC(20)" if unsigned else "BIGINT"
+         return "BIGINT" if unsigned else "BIGINT"
 
     return None
 
