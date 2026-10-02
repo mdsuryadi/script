@@ -7,12 +7,12 @@ docker run -d -p 3000:3000 --name=grafana \
 ```
 
 ## install mysqld_exporter
-
+```
 curl -s https://api.github.com/repos/prometheus/mysqld_exporter/releases/latest   | grep browser_download_url   | grep linux-amd64 | cut -d '"' -f 4   | wget -qi -
 tar xvf mysqld_exporter*.tar.gz
 sudo mv  mysqld_exporter-*.linux-amd64/mysqld_exporter /usr/local/bin/
 sudo chmod +x /usr/local/bin/mysqld_exporter
-
+```
 > Cek Version
 ```
 mysqld_exporter  --version
@@ -28,20 +28,22 @@ EXIT
 ```
 
 ## Configure mysqld_exporter
+```
 vim /etc/.mysqld_exporter.cnf
 [client]
 user=mysqld_exporter
 password=StrongPassword
 host=localhost
-
+```
 
 ## ADD Prometheus User
-useradd -rs /bin/false prometheus
+```useradd -rs /bin/false prometheus
 chown root:prometheus /etc/.mysqld_exporter.cnf
-
+```
 ## Create MysqlExporter Service
-sudo vim /etc/systemd/system/mysql_exporter.service
-
+```sudo vim /etc/systemd/system/mysql_exporter.service
+```
+```
 [Unit]
 Description=Prometheus MySQL Exporter
 After=network.target
@@ -73,12 +75,14 @@ ExecStart=/usr/local/bin/mysqld_exporter \
 
 [Install]
 WantedBy=multi-user.target
-
+```
 ## restart daemon
+```
 sudo systemctl daemon-reload
 sudo systemctl enable mysqld_exporter
 sudo systemctl start mysqld_exporter
 sudo systemctl status mysqld_exporter
+```
 
 ## Node Exporter 
 
