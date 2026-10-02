@@ -13,18 +13,19 @@ tar xvf mysqld_exporter*.tar.gz
 sudo mv  mysqld_exporter-*.linux-amd64/mysqld_exporter /usr/local/bin/
 sudo chmod +x /usr/local/bin/mysqld_exporter
 
-**Cek Version**
-mysqld_exporter  --version
-
-**credentian configure**
-mysql -u root -p
+> Cek Version
+``` mysqld_exporter  --version
+```
+> credentian configure
+``` mysql -u root -p
 
 CREATE USER 'mysqld_exporter'@'localhost' IDENTIFIED BY 'StrongPassword';
 GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'mysqld_exporter'@'localhost';
 FLUSH PRIVILEGES;
 EXIT
+```
 
-**Configure mysqld_exporter**
+## Configure mysqld_exporter
 vim /etc/.mysqld_exporter.cnf
 [client]
 user=mysqld_exporter
@@ -32,11 +33,11 @@ password=StrongPassword
 host=localhost
 
 
-**ADD Prometheus User**
+## ADD Prometheus User
 useradd -rs /bin/false prometheus
 chown root:prometheus /etc/.mysqld_exporter.cnf
 
-**Create MysqlExporter Service**
+## Create MysqlExporter Service
 sudo vim /etc/systemd/system/mysql_exporter.service
 
 [Unit]
@@ -71,24 +72,24 @@ ExecStart=/usr/local/bin/mysqld_exporter \
 [Install]
 WantedBy=multi-user.target
 
-**restart daemon**
+## restart daemon
 sudo systemctl daemon-reload
 sudo systemctl enable mysqld_exporter
 sudo systemctl start mysqld_exporter
 sudo systemctl status mysqld_exporter
 
->** Node Exporter ** 
+## Node Exporter 
 
-sudo useradd --system --shell /bin/false node_exporter
+> ``` sudo useradd --system --shell /bin/false node_exporter
 
 wget https://github.com/prometheus/node_exporter/releases/download/v1.10.2/node_exporter-1.10.2.linux-amd64.tar.gz
 cd  node_exporter-xxx
 tar -zxvf node_exporter-xxxx
 cd node_exporter-xxx
 cp -r /usr/local/bin/node_exporter
-
-** Create Service **
-sudo vim /etc/systemd/system/node_exporter.service
+```
+> Create Service
+``` sudo vim /etc/systemd/system/node_exporter.service
 [Unit]
 Description=Node Exporter
 Documentation=https://prometheus.io/docs/guides/node-exporter/
@@ -105,7 +106,7 @@ ExecStart=/usr/local/bin/node_exporter \
 
 [Install]
 WantedBy=multi-user.target
-
+```
 
 chmod 664 /etc/systemd/system/node_exporter.service
 
