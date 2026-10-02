@@ -14,10 +14,12 @@ sudo mv  mysqld_exporter-*.linux-amd64/mysqld_exporter /usr/local/bin/
 sudo chmod +x /usr/local/bin/mysqld_exporter
 
 > Cek Version
-``` mysqld_exporter  --version
 ```
-> credentian configure
-``` mysql -u root -p
+mysqld_exporter  --version
+```
+> Configure Credential
+```
+mysql -u root -p
 
 CREATE USER 'mysqld_exporter'@'localhost' IDENTIFIED BY 'StrongPassword';
 GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'mysqld_exporter'@'localhost';
@@ -80,8 +82,12 @@ sudo systemctl status mysqld_exporter
 
 ## Node Exporter 
 
-> ``` sudo useradd --system --shell /bin/false node_exporter
-
+> Add User
+```
+sudo useradd --system --shell /bin/false node_exporter
+```
+> Download Node Exporter
+```
 wget https://github.com/prometheus/node_exporter/releases/download/v1.10.2/node_exporter-1.10.2.linux-amd64.tar.gz
 cd  node_exporter-xxx
 tar -zxvf node_exporter-xxxx
@@ -107,22 +113,56 @@ ExecStart=/usr/local/bin/node_exporter \
 [Install]
 WantedBy=multi-user.target
 ```
-
+> Change mode
+```
 chmod 664 /etc/systemd/system/node_exporter.service
+```
 
-** install prometheus **
+## install prometheus
+> Download
+```
 wget https://github.com/prometheus/prometheus/releases/download/v3.9.1/prometheus-3.9.1.linux-386.tar.gz
-
+```
+> Configure
+```
 sudo mkdir /etc/prometheus /var/lib/prometheus
 cd prometheusfolder
 sudo mv prometheus promtool /usr/local/bin/
 sudo mv prometheus.yml /etc/prometheus/prometheus.yml
 sudo mv consoles/ console_libraries/ /etc/prometheus/
+```
+> Edit prometheus.yml
+```
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
 
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["192.168.6.16:9090"]
+       # The label name is added as a label `label_name=<label_value>` to any timeseries scraped from this config.
+        labels:
+          app: "prometheus"
+  - job_name : "node_exporter"
+    scrape_interval: 5s
+    static_configs:
+     - targets: ["localhost:9100"]
+
+  - job_name: 'mysqld_exporter'
+    static_configs:
+     - targets: ['192.168.6.16:9104']
+
+```
+> Add User
+```
 sudo useradd -rs /bin/false prometheus
 sudo chown -R prometheus: /etc/prometheus /var/lib/prometheus
 sudo vi /etc/systemd/system/prometheus.service
-
+```
+> Add Service
+```
 [Unit]
 Description=Prometheus Service
 After=network.target
@@ -131,20 +171,23 @@ Type=simple
 ExecStart=/usr/local/bin/prometheus --config.file=/etc/prometheus/prometheus.yml
 [Install]
 WantedBy=multi-user.target
-
-** restart service
+```
+> restart service
+```
 sudo systemctl daemon-reload
 sudo systemctl start prometheus
 sudo systemctl status prometheus
+```
 
 
-
-
-
-
+## Reference
+```
 https://www.linkedin.com/pulse/how-install-configure-prometheus-grafana-node-aravindhan-jayaraman/
 https://shrihariharidas73.medium.com/unlocking-database-insights-monitoring-mysql-with-prometheus-and-grafana-ddd2c4f01929
-
+```
+## Grafana Dashboard
+```
 14621 -> mysql workload
 7362 -> mysql overview
 1860 -> node exporter
+```
