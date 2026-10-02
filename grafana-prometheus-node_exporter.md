@@ -76,7 +76,10 @@ sudo systemctl enable mysqld_exporter
 sudo systemctl start mysqld_exporter
 sudo systemctl status mysqld_exporter
 
-** Node Exporter ** 
+>** Node Exporter ** 
+
+sudo useradd --system --shell /bin/false node_exporter
+
 wget https://github.com/prometheus/node_exporter/releases/download/v1.10.2/node_exporter-1.10.2.linux-amd64.tar.gz
 cd  node_exporter-xxx
 tar -zxvf node_exporter-xxxx
