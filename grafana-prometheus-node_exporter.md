@@ -1,11 +1,12 @@
-**install grafana on docker**
-_docker run -d -p 3000:3000 --name=grafana \
+## install grafana on docker
+```
+docker run -d -p 3000:3000 --name=grafana \
   --volume grafana-storage:/var/lib/grafana \
   --net=host \
-  grafana/grafana-oss_
+  grafana/grafana-oss
+```
 
-
-**install mysqld_exporter**
+## install mysqld_exporter
 
 curl -s https://api.github.com/repos/prometheus/mysqld_exporter/releases/latest   | grep browser_download_url   | grep linux-amd64 | cut -d '"' -f 4   | wget -qi -
 tar xvf mysqld_exporter*.tar.gz
